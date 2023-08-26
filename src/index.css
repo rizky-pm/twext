@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  @apply text-black;
+}
+
+.sidebar-menu {
+  @apply mt-2 p-2 bg-primary hover:text-primary rounded hover:bg-white cursor-pointer font-bold transition;
+}
