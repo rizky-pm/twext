@@ -4,7 +4,8 @@ import { doc, setDoc } from 'firebase/firestore';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
-import { firebaseAuth, firestore } from '../utils/firebase';
+import { firestore } from '../utils/firebase';
+import useAuthStore from '../state/auth/authStore';
 
 type FormValues = {
   content: string;
@@ -17,12 +18,13 @@ const InputText = () => {
     },
   });
   const { isSubmitting, errors } = formState;
+  const { user } = useAuthStore();
 
   const handleCreateNewPost = async (data: FormValues) => {
     const timestamp = dayjs().toISOString();
-    const currentUserEmail = firebaseAuth.currentUser?.email;
-    const currentUserId = firebaseAuth.currentUser?.uid;
-    const currentUserDisplayName = firebaseAuth.currentUser?.displayName;
+    const currentUserEmail = user?.email;
+    const currentUserId = user?.uid;
+    const currentUserDisplayName = user?.displayName;
 
     await setDoc(doc(firestore, 'posts', uuidv4()), {
       ...data,

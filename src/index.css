@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 body {
@@ -16,4 +16,9 @@ body {
 
 .primary-button {
   @apply px-3 py-2 font-semibold uppercase bg-primary text-white hover:bg-primary-light transition rounded tracking-wider w-1/6;
+}
+
+.main-box-shadow {
+  box-shadow: rgba(45, 48, 71, 0.16) 0px 3px 6px,
+    rgba(45, 48, 71, 0.23) 0px 3px 6px;
 }

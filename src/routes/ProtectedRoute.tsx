@@ -4,33 +4,41 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 import { firebaseAuth } from '../utils/firebase';
 import Sidebar from '../components/Sidebar';
+import useAuthStore from '../state/auth/authStore';
 
 type Props = {
   children: React.ReactNode;
 };
 
 const ProtectedRoute = ({ children }: Props) => {
-  const user = localStorage.getItem('user');
+  const { user, setUser } = useAuthStore();
+
+  const currentUser = localStorage.getItem('user');
+
+  console.log(user);
 
   useEffect(() => {
-    onAuthStateChanged(firebaseAuth, (user) => {
-      console.log(user);
-      if (user) {
-        localStorage.setItem('user', JSON.stringify(user));
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (userCredential) => {
+      if (userCredential) {
+        localStorage.setItem('user', JSON.stringify(userCredential));
+        setUser(userCredential);
       } else {
         localStorage.removeItem('user');
+        setUser(null);
       }
     });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
-  console.log({ user });
-
-  if (!user) {
+  if (!currentUser) {
     return <Navigate to={'/sign-in'} />;
   }
 
   return (
-    <main className='flex'>
+    <main className='flex ml-[16.666667%]'>
       <Sidebar />
       <section className='p-4 w-3/6'>{children}</section>
     </main>

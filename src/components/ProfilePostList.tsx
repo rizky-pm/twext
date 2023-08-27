@@ -6,23 +6,22 @@ import {
   where,
   FieldPath,
 } from 'firebase/firestore';
-import { firestore } from '../utils/firebase';
-
-import { getUserFromLocalStorage } from '../utils';
-
-import { PostType } from '../../type';
 import dayjs from 'dayjs';
+
+import useAuthStore from '../state/auth/authStore';
+import { firestore } from '../utils/firebase';
+import { PostType } from '../../type';
+
 import Post from './Post';
 
 const ProfilePostList = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
+  const { user } = useAuthStore();
 
   const getOwnPost = () => {
-    const currentUser = getUserFromLocalStorage();
-
     const q = query(
       collection(firestore, 'posts'),
-      where(new FieldPath('author', 'id'), '==', currentUser.uid)
+      where(new FieldPath('author', 'id'), '==', user?.uid)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
