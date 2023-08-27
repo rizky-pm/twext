@@ -2,14 +2,17 @@ import { signOut } from 'firebase/auth';
 import { useNavigate, NavLink } from 'react-router-dom';
 
 import { firebaseAuth } from '../utils/firebase';
+import useAuthStore from '../state/auth/authStore';
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuthStore();
 
   const handleSignOut = async () => {
     signOut(firebaseAuth)
       .then(() => {
         localStorage.removeItem('user');
+        setUser(null);
         navigate('/sign-in', {
           replace: true,
         });

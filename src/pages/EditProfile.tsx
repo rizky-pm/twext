@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Stack, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { updateProfile } from 'firebase/auth';
 
-import { firebaseAuth, firestore } from '../utils/firebase';
-import { onAuthStateChanged, updateProfile } from 'firebase/auth';
+import { firestore } from '../utils/firebase';
+import useAuthStore from '../state/auth/authStore';
 
 type EditProfileValues = {
   displayName: string;
@@ -19,6 +20,8 @@ const EditProfile = () => {
     photoURL: '',
   });
 
+  const { user } = useAuthStore();
+
   const { register, formState, handleSubmit, reset } =
     useForm<EditProfileValues>({
       defaultValues: {
@@ -32,7 +35,6 @@ const EditProfile = () => {
 
   const handleEditProfile = async (data: EditProfileValues) => {
     const { bio, displayName, photoURL } = data;
-    const user = firebaseAuth.currentUser;
 
     if (!user) {
       return;
@@ -68,30 +70,22 @@ const EditProfile = () => {
   };
 
   const getUserDetail = async () => {
-    onAuthStateChanged(firebaseAuth, async (user) => {
-      if (user) {
-        const detailRef = doc(firestore, 'userDetail', user?.uid);
-        const detailSnap = await getDoc(detailRef);
-        const userDetail = detailSnap.data();
+    if (user) {
+      const detailRef = doc(firestore, 'userDetail', user?.uid);
+      const detailSnap = await getDoc(detailRef);
+      const userDetail = detailSnap.data();
 
-        setDetail({
-          displayName: user.displayName || '',
-          bio: userDetail?.bio || '',
-          photoURL: user.photoURL || '',
-        });
-
-        // reset({
-        //   displayName: user.displayName || "",
-        //   bio: userDetail?.bio || "",
-        //   photoURL: user.photoURL || "",
-        // });
-      }
-    });
+      setDetail({
+        displayName: user.displayName || '',
+        bio: userDetail?.bio || '',
+        photoURL: user.photoURL || '',
+      });
+    }
   };
 
   useEffect(() => {
     getUserDetail();
-  }, []);
+  }, [user]);
 
   return (
     <section className='border-2 rounded-md flex flex-col p-4'>

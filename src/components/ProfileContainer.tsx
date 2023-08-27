@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 
-import { firebaseAuth } from '../utils/firebase';
+import useAuthStore from '../state/auth/authStore';
 
 const ProfileContainer = () => {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   return (
     <section className='border-2 rounded-md flex flex-col pb-4'>
@@ -22,7 +23,7 @@ const ProfileContainer = () => {
       </div>
 
       <span className='mx-4 font-bold text-2xl'>Display Name</span>
-      <span className='mx-4'>{firebaseAuth.currentUser?.email}</span>
+      <span className='mx-4'>{user?.email}</span>
       <p className='mx-4 mt-2'>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam ratione
         illum reprehenderit neque dolorum odit sequi obcaecati in iusto,
