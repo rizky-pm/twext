@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 body {
@@ -12,4 +12,8 @@ body {
 
 .sidebar-menu {
   @apply mt-2 p-2 bg-primary hover:text-primary rounded hover:bg-white cursor-pointer font-bold transition;
+}
+
+.primary-button {
+  @apply px-3 py-2 font-semibold uppercase bg-primary text-white hover:bg-primary-light transition rounded tracking-wider w-1/6;
 }
