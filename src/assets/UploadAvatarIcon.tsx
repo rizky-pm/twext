@@ -1,6 +1,6 @@
 type Props = {
   className: string;
-  fill: string;
+  fill?: string;
 };
 
 const UploadAvatarIcon = ({ className, fill }: Props) => {

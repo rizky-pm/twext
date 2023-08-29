@@ -15,7 +15,7 @@ body {
 }
 
 .primary-button {
-  @apply px-3 py-2 font-semibold uppercase bg-primary text-white hover:bg-primary-light transition rounded tracking-wider w-1/6;
+  @apply px-2 py-1 font-semibold uppercase bg-primary text-white hover:bg-primary-light transition rounded tracking-wider w-1/12;
 }
 
 .main-box-shadow {

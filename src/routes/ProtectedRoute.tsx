@@ -40,7 +40,7 @@ const ProtectedRoute = ({ children }: Props) => {
   return (
     <main className='flex ml-[16.666667%]'>
       <Sidebar />
-      <section className='p-4 w-3/6'>{children}</section>
+      <section className='p-4 w-4/6'>{children}</section>
     </main>
   );
 };
