@@ -11,11 +11,9 @@ type Props = {
 };
 
 const ProtectedRoute = ({ children }: Props) => {
-  const { user, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const currentUser = localStorage.getItem('user');
-
-  console.log(user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (userCredential) => {

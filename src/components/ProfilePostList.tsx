@@ -19,7 +19,6 @@ type Props = {
 
 const ProfilePostList = ({ targetUserId }: Props) => {
   const [posts, setPosts] = useState<PostType[]>([]);
-  console.log(targetUserId);
 
   const getOwnPost = () => {
     const q = query(
