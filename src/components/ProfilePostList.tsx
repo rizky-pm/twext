@@ -73,9 +73,13 @@ const ProfilePostList = ({ targetUserId }: Props) => {
 
   return (
     <section className='p-4 border-2 rounded-md mt-2'>
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
+      {!posts.length ? (
+        <p className='text-center font-bold'>
+          There is no post, why dont you add your first post?
+        </p>
+      ) : (
+        posts.map((post) => <Post key={post.id} post={post} />)
+      )}
     </section>
   );
 };
