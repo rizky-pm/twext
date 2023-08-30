@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import useAuthStore from '../state/auth/authStore';
+import { useNavigate, useParams } from 'react-router-dom';
 import { firebaseStorage, firestore } from '../utils/firebase';
 import { ref, getDownloadURL } from 'firebase/storage';
 import { doc, getDoc } from 'firebase/firestore';
@@ -10,34 +8,38 @@ type UserProfileType = {
   bio: string;
   avatarURL: string;
   headerURL: string;
+  displayName: string;
+  emailAddress: string;
 };
 
-const ProfileContainer = () => {
+type Props = {
+  targetUserId: string;
+};
+
+const ProfileContainer = ({ targetUserId }: Props) => {
   const [userProfile, setUserProfile] = useState<UserProfileType>({
     bio: '',
     avatarURL: '',
     headerURL: '',
+    displayName: '',
+    emailAddress: '',
   });
 
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { userId } = useParams();
 
   const getUserProfile = async () => {
-    if (user) {
-      const userDetailRef = doc(firestore, 'userDetail', user?.uid);
+    if (targetUserId) {
+      const userDetailRef = doc(firestore, 'userDetail', targetUserId);
       const userDetailSnap = await getDoc(userDetailRef);
       const userDetail = userDetailSnap.data();
-      const avatarRef = ref(firebaseStorage, `${user.uid}/avatar`);
-      const headerRef = ref(firebaseStorage, `${user.uid}/header`);
+      const avatarRef = ref(firebaseStorage, `${targetUserId}/avatar`);
+      const headerRef = ref(firebaseStorage, `${targetUserId}/header`);
 
       if (avatarRef) {
-        getDownloadURL(avatarRef)
-          .then((url) => {
-            setUserProfile((prevState) => ({ ...prevState, avatarURL: url }));
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+        getDownloadURL(avatarRef).then((url) => {
+          setUserProfile((prevState) => ({ ...prevState, avatarURL: url }));
+        });
       }
 
       if (headerRef) {
@@ -50,13 +52,18 @@ const ProfileContainer = () => {
           });
       }
 
-      setUserProfile((prevState) => ({ ...prevState, bio: userDetail?.bio }));
+      setUserProfile((prevState) => ({
+        ...prevState,
+        bio: userDetail?.bio,
+        displayName: userDetail?.displayName,
+        emailAddress: userDetail?.emailAddress,
+      }));
     }
   };
 
   useEffect(() => {
     getUserProfile();
-  }, [user]);
+  }, [targetUserId]);
 
   return (
     <section className='border-2 rounded-md flex flex-col pb-4'>
@@ -84,18 +91,22 @@ const ProfileContainer = () => {
         ) : (
           <div className='profile-picture rounded-full bg-slate-800 w-24 h-24 -mt-12 overflow-hidden'></div>
         )}
-        <button
-          onClick={() => {
-            navigate('/profile/edit');
-          }}
-          className='p-2 font-semibold text-sm rounded bg-primary hover:bg-primary-light transition text-white ml-auto'
-        >
-          Edit Profile
-        </button>
+        {!userId && (
+          <button
+            onClick={() => {
+              navigate('/profile/edit');
+            }}
+            className='p-2 font-semibold text-sm rounded bg-primary hover:bg-primary-light transition text-white ml-auto'
+          >
+            Edit Profile
+          </button>
+        )}
       </div>
 
-      <span className='mx-4 font-bold text-2xl mt-2'>{user?.displayName}</span>
-      <span className='mx-4 text-sm'>{user?.email}</span>
+      <span className='mx-4 font-bold text-2xl mt-2'>
+        {userProfile?.displayName}
+      </span>
+      <span className='mx-4 text-sm'>{userProfile?.emailAddress}</span>
       <p className='mx-4 mt-2'>{userProfile.bio}</p>
 
       <div className='mx-4 mt-4 font-semibold flex justify-between items-center w-2/5'>

@@ -8,20 +8,23 @@ import {
 } from 'firebase/firestore';
 import dayjs from 'dayjs';
 
-import useAuthStore from '../state/auth/authStore';
 import { firestore } from '../utils/firebase';
 import { PostType } from '../../type';
 
 import Post from './Post';
 
-const ProfilePostList = () => {
+type Props = {
+  targetUserId: string;
+};
+
+const ProfilePostList = ({ targetUserId }: Props) => {
   const [posts, setPosts] = useState<PostType[]>([]);
-  const { user } = useAuthStore();
+  console.log(targetUserId);
 
   const getOwnPost = () => {
     const q = query(
       collection(firestore, 'posts'),
-      where(new FieldPath('author', 'id'), '==', user?.uid)
+      where(new FieldPath('author', 'id'), '==', targetUserId)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -60,14 +63,14 @@ const ProfilePostList = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (targetUserId) {
       const unsubscribe = getOwnPost();
 
       return () => {
         unsubscribe();
       };
     }
-  }, [user]);
+  }, [targetUserId]);
 
   return (
     <section className='p-4 border-2 rounded-md mt-2'>
