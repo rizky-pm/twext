@@ -23,15 +23,15 @@ type Post = {
   };
 };
 
-type FollowersId = string[] | [];
+type UserIDs = string[] | [];
 
 const PostList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [followersId, setFollowersId] = useState<FollowersId>([]);
+  const [userIDs, setUserIDs] = useState<UserIDs>([]);
 
   const { user } = useAuthStore();
 
-  const getFollowersId = async () => {
+  const getUserIDs = async () => {
     if (user) {
       const followersRef = collection(
         firestore,
@@ -44,16 +44,19 @@ const PostList = () => {
 
       followersSnapshot.forEach((followerDoc) => {
         const followerId = followerDoc.id;
-        setFollowersId((prevState) => [...prevState, followerId]);
+        setUserIDs((prevState) => [...prevState, followerId]);
       });
+
+      setUserIDs((prevState) => [...prevState, user.uid]);
     }
   };
 
   const getPostList = () => {
-    if (followersId.length) {
+    if (userIDs.length) {
+      console.log('Get Post List');
       const q = query(
         collection(firestore, 'posts'),
-        where('author.id', 'in', followersId)
+        where('author.id', 'in', userIDs)
       );
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -93,12 +96,12 @@ const PostList = () => {
   };
 
   useEffect(() => {
-    getFollowersId();
+    getUserIDs();
   }, [user]);
 
   useEffect(() => {
     getPostList();
-  }, [followersId]);
+  }, [userIDs]);
 
   return (
     <section className=''>

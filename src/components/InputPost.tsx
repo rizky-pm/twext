@@ -11,7 +11,7 @@ type FormValues = {
   content: string;
 };
 
-const InputText = () => {
+const InputPost = () => {
   const { register, formState, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       content: '',
@@ -46,13 +46,13 @@ const InputText = () => {
       className='mb-4'
     >
       <TextField
-        id='filled-multiline-flexible'
+        id='content'
         placeholder="What's on your mind?"
         multiline
         fullWidth
         rows={4}
         {...register('content', {
-          required: 'Post content cant be empty',
+          required: 'Post cant be empty',
         })}
         error={!!errors.content}
         helperText={errors.content?.message}
@@ -69,4 +69,4 @@ const InputText = () => {
   );
 };
 
-export default InputText;
+export default InputPost;

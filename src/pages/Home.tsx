@@ -1,10 +1,10 @@
-import InputText from '../components/InputText';
+import InputPost from '../components/InputPost';
 import PostList from '../components/PostList';
 
 const Home = () => {
   return (
     <main className='h-full'>
-      <InputText />
+      <InputPost />
       <PostList />
     </main>
   );
