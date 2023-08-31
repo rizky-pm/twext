@@ -169,9 +169,9 @@ const ProfileContainer = ({ targetUserId }: Props) => {
             onClick={followUserHandler}
             className={`p-2 font-semibold text-sm rounded bg-primary hover:bg-primary-light ${
               userProfile.isFollowed
-                ? 'border-2 border-primary bg-white text-primary'
-                : ''
-            } transition text-white ml-auto`}
+                ? 'border-2 border-primary bg-white text-primary hover:text-white hover:bg-primary'
+                : 'text-white'
+            } transition ml-auto`}
           >
             {userProfile.isFollowed ? 'Followed' : 'Follow'}
           </button>
