@@ -5,6 +5,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { firebaseAuth } from '../utils/firebase';
 import Sidebar from '../components/Sidebar';
 import useAuthStore from '../state/auth/authStore';
+import ExploreBar from '../components/ExploreBar';
 
 type Props = {
   children: React.ReactNode;
@@ -39,6 +40,7 @@ const ProtectedRoute = ({ children }: Props) => {
     <main className='flex ml-[16.666667%]'>
       <Sidebar />
       <section className='p-4 w-4/6'>{children}</section>
+      <ExploreBar />
     </main>
   );
 };
