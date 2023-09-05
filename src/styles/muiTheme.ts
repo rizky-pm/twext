@@ -1,6 +1,20 @@
 import { createTheme } from '@mui/material';
 
 const muiTheme = createTheme({
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+        size: 'small',
+      },
+      styleOverrides: {
+        root: {
+          fontFamily: 'Plus Jakarta Sans, sans-serif',
+          fontWeight: 'bold',
+        },
+      },
+    },
+  },
   palette: {
     common: {
       black: '#2D3047',
