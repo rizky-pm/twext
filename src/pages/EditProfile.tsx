@@ -55,8 +55,6 @@ const EditProfile = () => {
 
   const { user } = useAuthStore();
 
-  const { user } = useAuthStore();
-
   const { register, formState, handleSubmit, reset } =
     useForm<EditProfileValues>({
       defaultValues: {
