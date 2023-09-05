@@ -22,3 +22,23 @@ body {
   box-shadow: rgba(45, 48, 71, 0.16) 0px 3px 6px,
     rgba(45, 48, 71, 0.23) 0px 3px 6px;
 }
+
+.post {
+  display: grid;
+  grid-template-columns: 0.25fr 1.75fr 1fr;
+  grid-template-rows: 0.75fr 1.25fr;
+  gap: 0px 0.625rem;
+  grid-template-areas:
+    'avatar header header'
+    '. content content';
+
+  .content {
+    grid-area: content;
+  }
+  .avatar {
+    grid-area: avatar;
+  }
+  .header {
+    grid-area: header;
+  }
+}
