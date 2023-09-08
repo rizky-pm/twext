@@ -39,7 +39,6 @@ const SignInForm = () => {
 
   useEffect(() => {
     onAuthStateChanged(firebaseAuth, (user) => {
-      console.log(user);
       if (user) {
         localStorage.setItem('user', JSON.stringify(user));
       } else {

@@ -5,17 +5,16 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { firebaseAuth } from '../utils/firebase';
 import Sidebar from '../components/Sidebar';
 import useAuthStore from '../state/auth/authStore';
+import ExploreBar from '../components/ExploreBar';
 
 type Props = {
   children: React.ReactNode;
 };
 
 const ProtectedRoute = ({ children }: Props) => {
-  const { user, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const currentUser = localStorage.getItem('user');
-
-  console.log(user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (userCredential) => {
@@ -38,9 +37,10 @@ const ProtectedRoute = ({ children }: Props) => {
   }
 
   return (
-    <main className='flex'>
+    <main className='flex ml-[16.666667%]'>
       <Sidebar />
-      <section className='p-4 w-3/6'>{children}</section>
+      <section className='p-4 w-4/6'>{children}</section>
+      <ExploreBar />
     </main>
   );
 };

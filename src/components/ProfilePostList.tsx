@@ -8,20 +8,23 @@ import {
 } from 'firebase/firestore';
 import dayjs from 'dayjs';
 
-import useAuthStore from '../state/auth/authStore';
 import { firestore } from '../utils/firebase';
 import { PostType } from '../../type';
 
 import Post from './Post';
 
-const ProfilePostList = () => {
+type Props = {
+  targetUserId: string;
+};
+
+const ProfilePostList = ({ targetUserId }: Props) => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const { user } = useAuthStore();
 
   const getOwnPost = () => {
     const q = query(
       collection(firestore, 'posts'),
-      where(new FieldPath('author', 'id'), '==', user?.uid)
+      where(new FieldPath('author', 'id'), '==', targetUserId)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -60,18 +63,24 @@ const ProfilePostList = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = getOwnPost();
+    if (targetUserId) {
+      const unsubscribe = getOwnPost();
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [targetUserId]);
 
   return (
     <section className='p-4 border-2 rounded-md mt-2'>
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
+      {!posts.length ? (
+        <p className='text-center font-bold'>
+          There is no post, why dont you add your first post?
+        </p>
+      ) : (
+        posts.map((post) => <Post key={post.id} post={post} />)
+      )}
     </section>
   );
 };
