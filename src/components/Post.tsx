@@ -3,11 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { doc, deleteDoc } from 'firebase/firestore';
+import {
+  doc,
+  deleteDoc,
+  collection,
+  getDocs,
+  Timestamp,
+} from 'firebase/firestore';
 
 import { firestore } from '../utils/firebase';
 import useAuthStore from '../state/auth/authStore';
+import theme from '../styles/variables';
 import ThreeDotsIcon from '../assets/ThreeDotsIcon';
+import CommentIcon from '../assets/CommentIcon';
+import LikeIcon from '../assets/LikeIcon';
 
 type PostType = {
   id: string;
@@ -24,15 +33,77 @@ type PostProps = {
   post: PostType;
 };
 
+type Comment = {
+  size: number;
+  data: {
+    commentId: string;
+    content: string;
+    timestamp: Timestamp;
+    userId: string;
+  }[];
+};
+
+type Like = {
+  size: number;
+  data: {
+    userId: string;
+    timestamp: Timestamp;
+  }[];
+};
+
 const Post = ({ post }: PostProps) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [commentData, setCommentData] = useState<Comment>({
+    size: 0,
+    data: [],
+  });
+  const [likeData, setLikeData] = useState<Like>({
+    size: 0,
+    data: [],
+  });
 
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const tooltipRef = useRef<HTMLUListElement | null>(null);
 
   dayjs.extend(relativeTime);
+
+  const getLikesAndComments = async () => {
+    const postRef = doc(firestore, 'posts', post.id);
+    const commentsRef = collection(postRef, 'comments');
+    const likesRef = collection(postRef, 'likes');
+    const commentsQuerySnapshot = await getDocs(commentsRef);
+    const likesQuerySnapshot = await getDocs(likesRef);
+
+    const commentsData: Comment['data'] = commentsQuerySnapshot.docs.map(
+      (doc) => {
+        const { commentId, content, timestamp, userId } = doc.data();
+        return { commentId, content, timestamp, userId };
+      }
+    );
+
+    const likesData: Like['data'] = likesQuerySnapshot.docs.map((doc) => {
+      const { userId, timestamp } = doc.data();
+      return { userId, timestamp };
+    });
+
+    if (commentsQuerySnapshot.size > 0) {
+      setCommentData({
+        size: commentsQuerySnapshot.size,
+        data: [...commentsData],
+      });
+    }
+
+    if (likesQuerySnapshot.size > 0) {
+      setLikeData({
+        size: commentsQuerySnapshot.size,
+        data: [...likesData],
+      });
+    }
+  };
+
+  console.log(likeData);
 
   const handleDeleteOwnPost = async (postId: string) => {
     try {
@@ -43,6 +114,8 @@ const Post = ({ post }: PostProps) => {
   };
 
   useEffect(() => {
+    getLikesAndComments();
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         tooltipRef.current &&
@@ -73,6 +146,7 @@ const Post = ({ post }: PostProps) => {
     <>
       <div className='relative'>
         <div className='post gap-y-3 p-4 border-b-2 hover:bg-slate-100 transition relative'>
+          <div className='avatar rounded-full w-12 h-12 bg-slate-500'></div>
           <div className='header flex justify-between items-center'>
             <span
               onClick={() => {
@@ -101,7 +175,23 @@ const Post = ({ post }: PostProps) => {
           <div className='content'>
             <p>{post.content}</p>
           </div>
-          <div className='avatar rounded-full w-12 h-12 bg-slate-500'></div>
+          <div className='footer flex space-x-6 text-lg font-semibold'>
+            <div className='flex items-center space-x-1'>
+              <CommentIcon
+                className='h-5 w-5 cursor-pointer'
+                stroke={theme.colors.common.black}
+              />
+              <span>{commentData.size}</span>
+            </div>
+
+            <div className='flex items-center'>
+              <LikeIcon
+                className='h-6 w-6 cursor-pointer'
+                stroke={theme.colors.common.black}
+              />
+              <span>{likeData.size}</span>
+            </div>
+          </div>
         </div>
 
         {isTooltipOpen && (

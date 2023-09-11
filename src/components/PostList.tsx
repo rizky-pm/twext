@@ -53,7 +53,6 @@ const PostList = () => {
 
   const getPostList = () => {
     if (userIDs.length) {
-      console.log('Get Post List');
       const q = query(
         collection(firestore, 'posts'),
         where('author.id', 'in', userIDs)

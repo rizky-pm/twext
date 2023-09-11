@@ -26,11 +26,12 @@ body {
 .post {
   display: grid;
   grid-template-columns: 0.25fr 1.75fr 1fr;
-  grid-template-rows: 0.75fr 1.25fr;
+  grid-template-rows: 0.75fr 1.25fr 0.25fr;
   gap: 0px 0.625rem;
   grid-template-areas:
     'avatar header header'
-    '. content content';
+    '. content content'
+    '. footer footer';
 
   .content {
     grid-area: content;
@@ -40,5 +41,11 @@ body {
   }
   .header {
     grid-area: header;
+  }
+
+  .footer {
+    @apply mt-3;
+
+    grid-area: footer;
   }
 }
